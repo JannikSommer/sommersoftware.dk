@@ -1,0 +1,52 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1 
+       
+      - name: Push to Docker registry
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: repos.sommersoftware.dk/sommersoftware.dk:latest
+       
+       
+       
+       
+#       - name: Run Buildx (push image)      
+#         if: success()      
+#         run: |        
+#           docker buildx build \        
+#           --platform linux/amd64,linux/arm64,linux/arm/v7 \       
+#           --tag repos.sommersoftware.dk/sommersoftware.dk:latest \        
+#           --file ./Dockerfile \        
+#           --output type=image,push=true .
+               
+               
+#       - name: Push to Docker registry
+#         uses: docker/build-push-action@v2
+#         with:
+#           context: .
+#           push: true
+#           tags: repos.sommersoftware.dk/sommersoftware.dk:latest
+      
+#       - name: Inspect
+#         run: |
+#           docker buildx imagetools inspect repos.sommersoftware.dk/sommersoftware.dk:latest
