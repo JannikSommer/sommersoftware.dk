@@ -62,51 +62,37 @@
 </script>
 
 <hr />
+<div class="alert alert-danger" role="alert">
+    <h4 class="alert-heading">Attention!</h4>
+    <p>
+        As of launch there is much to be desired when it comes to calculations of salary. Many implementations are NOT correct, however they are somewhat close to the desired result.
+        Especially holiday reduction (helligdags reduktion) and tax-calculations are not implemented properly.
+    </p>
+</div>
+<hr />
 
 
 <div class="container-fluid">
     <div class="row">
         <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
             <div class="position-sticky pt-3">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" >
-                            <h3>Years</h3>
-                            <hr />
-                        </a>
-                    </li>
-                    @{
-                        int yearcounter = 0;
-                        foreach (YearModel year in Model)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="#">
-                                    <h5>@year.YearNumber </h5>
-                                </a>
-                            </li>
-                        }
+                Select paycheck
+                @{
+                    foreach (YearModel year in Model)
+                    {
+                        <hr />
+                        <div class="d-grid gap-2 col-md-3">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle align-content-center" type="button" id="dropdownMenuYear" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    @year.YearNumber
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuYear">
+                                    <a class="dropdown-item" href="#"></a>
+                                </div>
+                            </div>
+                        </div>
                     }
-                    <li class="nav-item">
-                        <a class="nav-link active">
-                            <h3>Months</h3>
-                            <hr />
-                        </a>
-                    </li>
-                    @{
-                        int monthIndex = 0;
-                        foreach(YearModel year in Model)
-                        {
-                            @foreach(MonthModel month in year.Months)
-                            {
-                                <li class="nav-item">
-                                    <button class="btn btn-link " onclick="createShiftList(@monthIndex)">
-                                        <h6>@month.DisplayName </h6>
-                                    </button>
-                                </li>
-                            }
-                        }
-                    }
-                </ul>
+                }
             </div>
         </nav>
 
@@ -114,30 +100,65 @@
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2">Dashboard</h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
-                    <div class="btn-group me-2">
-                        <p id="item_picked_total">
-                            <h2>25000k</h2>
-                        </p>
+                    <!-- Years listed here
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuYear" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Select year
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuYear">
+                            @{
+                                foreach (YearModel year in Model)
+                                {
+                                    <a class="dropdown-item" href="#">@year.YearNumber</a>
+                                }
+                            }
+
+                        </div>
+                    </div>
+                    -->
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuMonth" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Select salary month
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuMonth">
+                            <!-- Months listed here -->
+                            @{
+                                foreach (YearModel year in Model)
+                                {
+                                    @foreach (MonthModel month in year.Months)
+                                    {
+                                        <a class="dropdown-item" href="#">@month.DisplayName </a>
+                                    }
+                                }
+                            }
+
+                        </div>
                     </div>
                 </div>
             </div>
 
             <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
 
-            <h2>Month details</h2>
+            <h2>Month details - @currentPeriod.DisplayName</h2>
             <div class="table-responsive">
                 <table class="table table-striped table-sm">
                     <tr>
-                        <td>Total hours</td>
-                        <td>Evening hours</td>
-                        <td>Saturday hours</td>
-                        <td>Sunday hours</td>
+                        <td>Total hours: @Html.DisplayFor(modelItem => currentPeriod.TotalHoursWorked)</td>
+                        <td>Evening hours: @Html.DisplayFor(modelItem => currentPeriod.EveningSalaryMinutes)</td>
+                        <td>Saturday hours: @Html.DisplayFor(modelItem => currentPeriod.SaturdaySalaryMinutes)</td>
+                        <td>Sunday hours: @Html.DisplayFor(modelItem => currentPeriod.SundaySalaryMinutes)</td>
                     </tr>
                     <tr>
-                        <td>Total hours</td>
-                        <td>Evening hours</td>
-                        <td>Saturday hours</td>
-                        <td>Sunday hours</td>
+                        <td>Hour salary: @Html.DisplayFor(modelItem => currentPeriod.HourSalaryTotal)</td>
+                        <td>Evening salary: @Html.DisplayFor(modelItem => currentPeriod.EveningSalaryTotal)</td>
+                        <td>Saturday salary: @Html.DisplayFor(modelItem => currentPeriod.SaturdaySalaryTotal)</td>
+                        <td>Sunday salary: @Html.DisplayFor(modelItem => currentPeriod.SundaySalaryTotal)</td>
+                    </tr>
+                    <tr>
+                        <td>Brutto salary: @Html.DisplayFor(modelItem => currentPeriod.MonthSalaryAsCurrency)</td>
+                        <td>Netto salary: @Html.DisplayFor(modelItem => currentPeriod.TotalSalaryAfterTax)</td>
+                        <td></td>
+                        <td></td>
                     </tr>
                 </table>
             </div>
@@ -145,15 +166,17 @@
             <h2>Shifts</h2>
             <div class="table-responsive">
                 <table class="table table-striped table-sm">
-                    <tr>
-                        <td>Shift date</td>
-                        <td>Shift salary</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-
-                    </tr>
+                    @foreach (var shift in currentPeriod.Shifts)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => shift.DisplayDateTime)
+                            </td>
+                            <td align="right">
+                                @Html.DisplayFor(modelItem => shift.SalaryAsCurrency)
+                            </td>
+                        </tr>
+                    }
                 </table>
             </div>
         </main>
@@ -170,31 +193,12 @@
 <!-- OTHER STUFF STARTS HERE -------------------------------------------->
 
 
-
-
-
-
-
-
-
-
-
-<div class="alert alert-danger" role="alert">
-    <h4 class="alert-heading">Attention!</h4>
-    <p>
-        As of launch there is much to be desired when it comes to calculations of salary. Many implementations are NOT correct, however they are somewhat close to the desired result.
-        Especially holiday reduction (helligdags reduktion) and tax-calculations are not implemented properly.
-    </p>
-</div>
-<p>
-    <h5>Your next paycheck is shown below</h5>
-</p>
 <hr />
 <div id="accordion_x">
     <div class="card">
-        <div class="card-header" id="heading_x">
+        <div class="card-header card-link" data-toggle="collapse" data-target="#collapse_x" id="heading_x">
             <h5 class="mb-0">
-                <button class="btn btn-link" data-toggle="collapse" data-target="#collapse_x" aria-expanded="true" aria-controls="collapse_x">
+                <button class="btn">
                     <h3>@currentPeriod.DisplayName</h3>
                 </button>
                 <button class="btn btn-link btn-md float-right" type="button" disabled>
@@ -223,7 +227,7 @@
                         <td></td>
                         <td></td>
                     </tr>
-                    @foreach(var shift in currentPeriod.Shifts)
+                    @foreach (var shift in currentPeriod.Shifts)
                     {
                         <tr>
                             <td></td>
@@ -260,9 +264,9 @@
         {
             <div class="accordion" id="accordionParent_@i">
                 <div class="card">
-                    <div class="card-header" id="heading_@i">
+                    <div class="card-header card-link" data-toggle="collapse" data-target="#collapse_@i" id="heading_@i">
                         <h2 class="mb-0">
-                            <button class="btn btn-link btn-md float-left" type="button" data-toggle="collapse" data-target="#collapse_@i" aria-expanded="false" aria-controls="collapse_@i">
+                            <button class="btn">
                                 <h3>@month.DisplayName</h3>
                             </button>
                             <button class="btn btn-link btn-md float-right" type="button" disabled>
@@ -292,7 +296,7 @@
                                     <td></td>
                                     <td></td>
                                 </tr>
-                                @foreach(var shift in month.Shifts)
+                                @foreach (var shift in month.Shifts)
                                 {
                                     <tr>
                                         <td></td>
