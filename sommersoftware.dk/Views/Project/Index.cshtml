@@ -1,0 +1,35 @@
+﻿
+
+
+
+<section class="jumbotron text-center">
+    <div class="container">
+        <h1 class="jumbotron-heading">Project page</h1>
+        <p class="lead text-muted">Client for simulating dataflow.</p>
+        <p>
+            <button onclick="getLocation()" class="btn btn-primary my-2">Get geolocation</button>
+            <button href="#" class="btn btn-secondary my-2">Do something else here</button>
+        </p>
+    </div>
+</section>
+
+<p id="locationContainer">
+
+</p>
+
+
+<script>
+    var x = document.getElementById("locationContainer");
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+
+    function showPosition(position) {
+        x.innerHTML = "Latitude: " + position.coords.latitude +
+            "<br>Longitude: " + position.coords.longitude;
+    }
+</script>

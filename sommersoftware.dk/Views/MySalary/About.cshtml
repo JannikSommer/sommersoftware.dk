@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewData["Title"] = "About";
+}
+
+<h1>About</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-12">
+        <p>
+            This website is craeted to help employees of Salling Group Denmark to get a better overview of their salary.
+            It is created by a student of Software bachelor at Aalborg University, who works part time at føtex, Salling Group.
+            The website is mainly created to develop new skills however, it can be used by others aswell.
+            The domain name is registered by me and the server is setup on an old laptop in my apartment, which might make the website some what slow an potentially unrealiable.
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <p>
+            The website might not run forever as there might not be enough users and I might not be using it if I get a new job.
+            However, untill then, the website will remain free and open source.
+        </p>
+    </div>
+</div>
+
+<h3>Technical details</h3>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <p>
+            This section will explain some of the technical details of the web application which can give an insight to how the web application is build and hosted.
+        </p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h5>Server setup</h5>
+        <p>
+            The server is running CentOS7 operating system which uses Apache as a reverse proxy.
+            Apache then sends all connections to the web application which is hosted using Kestrel.
+        </p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h5>Web application</h5>
+        <p>
+            The web application is made using Asp.Net CORE 3.1.
+        </p>
+        <p>
+            The most important part of the web app is it's use of Google Apis which is used to get data from an users calendar.
+            For this purpose the Google Open ID Connect library for Asp.Net CORE 3 is used for Oauth2 flow.
+        </p>
+        <p>
+            Since the application uses Google OIDC to authenticate and authorize Cookies are also in use.
+            The cookie is used to keep information about authentication and authorization such that an user does not have to login and authorize every time they want to use the applicaiton.
+        </p>
+        <p>
+            Another key feature of this website is it's use of local storage.
+            This is implemented so that an user can set and forget the settings for the salary calculations.
+            The feature is especially good as there is no need for a database to hold all this information and an user can see what data is kept in their browser.
+        </p>
+    </div>
+</div>

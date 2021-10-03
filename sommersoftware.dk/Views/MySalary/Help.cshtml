@@ -1,0 +1,180 @@
+﻿
+@{
+    ViewData["Title"] = "Help";
+}
+<h1>Help portal</h1>
+<hr />
+<p>
+    Learn how to use the website using the FAQ below.
+    If your question is not listed below, please contact support from the <a asp-controller="Home" asp-action="Contact">contact page</a>.
+</p>
+
+
+<div class="panel-group" id="accordion_0">
+    <div class="accordion" id="accordionExample_0">
+        <div class="card">
+            <div class="card-header" id="heading_0">
+                <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse_0" aria-expanded="false" aria-controls="collapse_0">
+                        <h3>Q: Can I use Apple Calendar instead of Google Calendar?</h3>
+                    </button>
+                </h2>
+            </div>
+            <div id="collapse_0" class="collapse" aria-labelledby="heading_0" data-parent="#accordionExample_0">
+                <div class="card-body">
+                    <h3>A:</h3>
+                    <p>
+                        Due to limitations, this website CANNOT at the moment get data from Apple Calendar. However, it is possible to link your Apple Calendar to a Google account.
+                        First, make sure that you have a Google account with Google Calendar, this is nessecary to get calendar data.
+                    </p>
+                    <p>
+                        The Google Calendar should subscribe to your existing Apple Calendar, which automatically updated the calendar with any changes.
+                        This also means that this process of connecting the calendars, is a single occurence.
+                    </p>
+                    <p>
+                        To get the URL for your Apple Calendar, follow the instructions below.
+                    </p>
+                    <ul>
+                        <li>Log into <a href="https://www.icloud.com/" target="_blank">iCloud</a>.</li>
+                        <li>Open the Calendar App.</li>
+                        <li>Click on the grayed out "wireless" icon.</li>
+                        <li>Click Public Calendar.</li>
+                        <li>Copy the given URL (it will start with "webcal").</li>
+                    </ul>
+
+                    <p>
+                        The copied URL is subscribed to in your Google account. To do so, follow the steps below.
+                    </p>
+                    <ul>
+                        <li>Log into <a href="https://calendar.google.com/" target="_blank">Google Calendar</a>.</li>
+                        <li>Click the "+" in the left side at <b>Other calendars</b></li>
+                        <li>Choose <b>From website</b></li>
+                        <li>In the input form, paste the URL which was gathered from the Apple Calendar.</li>
+                        <li>Check the checkbox to make the calendar public. </li>
+                    </ul>
+
+                    <p>
+                        Now that the calendar is linked to your Google account, the Google URL for that calendar is needed. Follow the steps below:
+                    </p>
+                    <ul>
+                        <li>Hover the newly added calendar and click <b>"&#8942" (options)</b> and click <b>settings</b></li>
+                        <li>Scroll to the buttom and find the public calendar id for the calendar (ends with <b>google.com</b>).</li>
+                        <li>Copy the link and use this link for the MySalary website.</li>
+                    </ul>
+                    <p>
+                        Now the calendars are setup for use and you can start using the website!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion" id="accordionExample_1">
+        <div class="card">
+            <div class="card-header" id="heading_1">
+                <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse_1" aria-expanded="false" aria-controls="collapse_1">
+                        <h3>Q: How is salary calculated? </h3>
+                    </button>
+                </h2>
+            </div>
+            <div id="collapse_1" class="collapse" aria-labelledby="heading_1" data-parent="#accordionExample_1">
+                <div class="card-body">
+                    <h3>A:</h3>
+                    <p>
+                        The calculations follow the general calculations which are relevant for employees at Salling Group and other danish retail stores under HK agreement.
+                        Under this agreement some rules for calculating bonuses aplly. You can learn more about these calculations <a href="https://www.jobpatruljen.dk/lonsatser/butik/" target="_blank">here</a>
+                    </p>
+                    <p>
+                        For information on how this is coded you can contact the developer via the <a asp-area="" asp-controller="Home" asp-action="Contact">contact page</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion" id="accordionExample_2">
+        <div class="card">
+            <div class="card-header" id="heading_2">
+                <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse_2" aria-expanded="false" aria-controls="collapse_2">
+                        <h3>Q: Why is Google telling me to be careful trusting this website? </h3>
+                    </button>
+                </h2>
+            </div>
+            <div id="collapse_2" class="collapse" aria-labelledby="heading_2" data-parent="#accordionExample_2">
+                <div class="card-body">
+                    <h3>A:</h3>
+                    <p>
+                        At this moment Google has NOT approved this website as a trusted website. The warning is shown when you are authorizing access to your calendar.
+                        Since the calendar can contain vulnerable data Google sends a warning.
+                        Google can verify any website and remove the warning. BUT (and it is a big but!) this is incredibly expensive, especially for a non-profit devleoper.
+                        Therefore this website remains untrusted by Google.
+                    </p>
+                    <p>
+                        You can at anytime remove this website as trusted from this <a href"#">link</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion" id="accordionExample_3">
+        <div class="card">
+            <div class="card-header" id="heading_3">
+                <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse_3" aria-expanded="false" aria-controls="collapse_3">
+                        <h3>Q: What can this website do with my Google Calendar?</h3>
+                    </button>
+                </h2>
+            </div>
+            <div id="collapse_3" class="collapse" aria-labelledby="heading_3" data-parent="#accordionExample_3">
+                <div class="card-body">
+                    <h3>A:</h3>
+                    <p>
+                        This website is only able to see your calendar, not to make any changes to it (this might be changed later).
+                        As you are signing in and authorizing access to your calendar, you are prompted with the...
+                    </p>
+                    <p>
+                        You can at anytime remove this website as trusted from this <a href"#">link</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion" id="accordionExample_4">
+        <div class="card">
+            <div class="card-header" id="heading_4">
+                <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse_4" aria-expanded="false" aria-controls="collapse_4">
+                        <h3>Q: Why do I not get any answers on my email?</h3>
+                    </button>
+                </h2>
+            </div>
+            <div id="collapse_4" class="collapse" aria-labelledby="heading_4" data-parent="#accordionExample_4">
+                <div class="card-body">
+                    <h3>A:</h3>
+                    <p>
+                        I'm lazy and might not have the time. Especially December through January and May through June. Deal with it.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion" id="accordionExample_5">
+        <div class="card">
+            <div class="card-header" id="heading_5">
+                <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse_5" aria-expanded="false" aria-controls="collapse_5">
+                        <h3>Q: What does all the words in the dashboard mean?</h3>
+                    </button>
+                </h2>
+            </div>
+            <div id="collapse_5" class="collapse" aria-labelledby="heading_5" data-parent="#accordionExample_5">
+                <div class="card-body">
+                    <h3>A:</h3>
+                    <p>
+                        Here is a list of the thermonoligy used on this website:
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

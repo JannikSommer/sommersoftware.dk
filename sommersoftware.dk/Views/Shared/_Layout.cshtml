@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SommerSoftware</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        /*Used to make sure that all items in the navbar changes the cursor to look "click-able"*/
+        a.nb {
+            cursor: pointer;
+        }
+    </style>
+
+    <script type="text/javascript">
+    function GoToDashboard() {
+        /* Send the user to ~/Dashboard/Index if the user already have entered credentials */
+        try {
+            var str = window.localStorage.getItem('key');
+        }
+        catch(err) {
+            window.location.href = "@Url.Action("Settings", "MySalary")";
+        }
+        if (str == null) {
+            window.location.href = "@Url.Action("Settings", "MySalary")";
+        }
+        else {
+            var url = '@Url.Action("Dashboard", "MySalary", new { settingsString = "__str__" })';
+            window.location.href = url.replace('__str__', str);
+        }
+    }
+    </script>
+</head>
+
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md navbar-light bg-light">
+            <div class="container">
+                <!--<a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                <img src="~/SommerSoftware/logo.png" width="100" height="100" class="d-inline-block align-top" alt="">
+                </a> -->
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"> SommerSoftware </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="" id="navbarDropdown0" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Homepage</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Index"><i class="fa fa-fw fa-home"></i> Home</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-dark" asp-area="" asp-controller="Home" asp-action="Privacy"><i class="fa fa-fw fa-shield"></i> Privacy</a>
+                                <a class="dropdown-item text-dark" asp-area="" asp-controller="Home" asp-action="About"><i class="fa fa-fw fa-info"></i> About</a>
+                                <a class="dropdown-item text-dark" asp-area="" asp-controller="Home" asp-action="Help"><i class="fa fa-fw fa-question"></i> Help</a>
+                                <a class="dropdown-item text-dark" asp-area="" asp-controller="Home" asp-action="Contact"><i class="fa fa-fw fa-envelope"></i> Contact</a>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">MySalary Online</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" asp-area="" asp-controller="MySalary" asp-action="Index"><i class="fa fa-fw fa-home"></i> Home</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-dark nb" onclick="GoToDashboard()"><i class="fa fa-fw fa-tachometer"></i> Dashboard</a>
+                                <a class="dropdown-item text-dark" asp-area="" asp-controller="MySalary" asp-action="Settings"><i class="fa fa-fw fa-gear"></i> Settings</a>
+                                <a class="dropdown-item text-dark" asp-area="" asp-controller="MySalary" asp-action="About"><i class="fa fa-fw fa-info"></i> About</a>
+                                <a class="dropdown-item text-dark" asp-area="" asp-controller="MySalary" asp-action="Help"><i class="fa fa-fw fa-question"></i> Help</a>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Grade by SommerSoftware</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" asp-area="" asp-controller="Grade" asp-action="Index"><i class="fa fa-fw fa-home"></i> Home</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" asp-area="" asp-controller="Grade" asp-action="Dashboard"><i class="fa fa-fw fa-tachometer"></i> Dashboard</a>
+                                <a class="dropdown-item text-dark" asp-area="" asp-controller="Grade" asp-action="About"><i class="fa fa-fw fa-info"></i> About</a>
+                                <a class="dropdown-item text-dark" asp-area="" asp-controller="Grade" asp-action="Help"><i class="fa fa-fw fa-question"></i> Help</a>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li>
+                            <form class="form-inline">
+                    <button class="btn btn-outline-danger" asp-area="" asp-controller="Home" asp-action="Logout"><i class="fa fa-fw fa-sign-out"></i> Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2021 - SommerSoftware - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

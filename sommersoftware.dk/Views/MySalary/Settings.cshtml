@@ -1,0 +1,125 @@
+﻿@model sommersoftware.dk.Models.MySalaryModels.SettingsModel
+@{
+    ViewData["Title"] = "Create";
+}
+
+<script type="text/javascript">
+    function loadDataToFields() {
+        var settings = localStorage.getItem('key');
+        if (settings != null) {
+            var userSettings = JSON.parse(settings);
+            document.getElementById('form_calendarlink').value = userSettings.CalendarLink;
+            document.getElementById('form_keyWord').value = userSettings.ShiftKeyword;
+            document.getElementById('form_loadFromDate').value = userSettings.BeginDate;
+            document.getElementById('form_loadToDate').value = userSettings.EndDate;
+            document.getElementById('form_hourWage').value = userSettings.HourWage;
+            document.getElementById('form_eveningWage').value = userSettings.EveningWage;
+            document.getElementById('form_saturdayWage').value = userSettings.SaturdayWage;
+            document.getElementById('form_sundayWage').value = userSettings.SundayWage;
+            document.getElementById('form_taxPercentage').value = userSettings.TotalTaxPercentage;
+            document.getElementById('form_taxDeduction').value = userSettings.TotalTaxDeduction;
+        }
+    }
+</script>
+<script type="text/javascript">
+    window.onload = loadDataToFields;
+</script>
+<script>
+    function LoadDataFromLocalStorage() {
+        return JSON.parse(window.localStorage.getItem('key'));
+    }
+</script>
+<script type="text/javascript">
+    function SaveDataToLocalStorage() {
+        var userSettings = {
+            CalendarLink: document.getElementById('form_calendarlink').value,
+            ShiftKeyword: document.getElementById('form_keyWord').value,
+            BeginDate: document.getElementById('form_loadDate').value,
+            EndDate: document.getElementById('form_endDate'),
+            HourWage: document.getElementById('form_hourWage').value,
+            EveningWage: document.getElementById('form_eveningWage').value,
+            SaturdayWage: document.getElementById('form_saturdayWage').value,
+            SundayWage: document.getElementById('form_sundayWage').value,
+            TotalTaxPercentage: document.getElementById('form_taxPercentage'),
+            TotalTaxDeduction: document.getElementById('form_taxDeduction').value,
+        }
+        if (document.getElementById('form_calendarlink').value == "Leave empty for primary calendar") {
+            document.getElementById('form_calendarlink').value = "";
+        }
+        localStorage.setItem('key', JSON.stringify(userSettings));
+        var str = JSON.stringify(userSettings);
+        var url = '@Url.Action("Index", "Dashboard", new { settingsString = "__str__" })';
+        window.location.href = url.replace('__str__', str);
+    }
+</script>
+
+<h1>Create new or update existing settings</h1>
+<hr />
+<p>
+    This website currently only follows specific rules for Salling Group employees. These rules cover things such as break time, holiday reduction and more. <br />
+    <b>Filling out the form below will supply necessary informaton for calculating salary. Every field HAS to be given a value!</b>
+</p>
+<br />
+
+<form asp-action="Settings">
+    <div class="row">
+        <div class="col-md-6">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="HourWage" class="control-label"></label>
+                <input asp-for="HourWage" class="form-control" id="form_hourWage" placeholder="Use . to specify decimals" />
+                <span asp-validation-for="HourWage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EveningWage" class="control-label"></label>
+                <input asp-for="EveningWage" class="form-control" id="form_eveningWage" placeholder="Use . to specify decimals" />
+                <span asp-validation-for="EveningWage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SaturdayWage" class="control-label"></label>
+                <input asp-for="SaturdayWage" class="form-control" id="form_saturdayWage" placeholder="Use . to specify decimals" />
+                <span asp-validation-for="SaturdayWage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SundayWage" class="control-label"></label>
+                <input asp-for="SundayWage" class="form-control" id="form_sundayWage" placeholder="Use . to specify decimals" />
+                <span asp-validation-for="SundayWage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TotalTaxPercentage" class="control-label"></label>
+                <input asp-for="TotalTaxPercentage" class="form-control" id="form_taxPercentage" placeholder="Use . to specify decimals" />
+                <span asp-validation-for="TotalTaxPercentage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TotalTaxDeduction" class="control-label"></label>
+                <input asp-for="TotalTaxDeduction" class="form-control" id="form_taxDeduction" placeholder="Use . to specify decimals" />
+                <span asp-validation-for="TotalTaxDeduction" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="CalendarLink" class="control-label"></label>
+                <input asp-for="CalendarLink" class="form-control" id="form_calendarlink" placeholder="Must end with @@gmail.com" />
+                <span asp-validation-for="CalendarLink" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ShiftKeyword" class="control-label"></label>
+                <input asp-for="ShiftKeyword" class="form-control" id="form_keyWord" placeholder="The substring to find shifts" />
+                <span asp-validation-for="ShiftKeyword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BeginDate" class="control-label"></label>
+                <input asp-for="BeginDate" class="form-control" id="form_loadFromDate" />
+                <span asp-validation-for="BeginDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndDate" class="control-label"></label>
+                <input asp-for="EndDate" class="form-control" id="form_loadToDate" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+            <div class="form-group float-lg-right">
+                <input type="submit" value="Continue" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</form>

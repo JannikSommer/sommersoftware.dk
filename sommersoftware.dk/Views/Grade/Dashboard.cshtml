@@ -1,0 +1,326 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+<script type="text/javascript">
+    const namePostfix = "_name";
+    const EctsPostFix = "_ects";
+    const gradePostfix = "_grade";
+    const averageGradePostfix = "_averageGrade";
+
+    var semesterDict = []; /* List of all the semesters in the input */
+    var semesterIdInc = 0;
+    var courseIdInc = 0;
+
+    function addCourseField(appendToDiv, semesterId, courseName, courseECTS, courseGrade, courseGradeAverage) {
+        newDivName = "semester_" + semesterId + "_course_" + courseIdInc;
+        var course = {
+            key: courseIdInc,
+            value: {
+                id: courseIdInc,
+                name: courseName,
+                ECTS: courseECTS,
+                studentGrade: courseGrade,
+                averageGrade: courseGradeAverage
+            }
+        };
+        for (var i = 0; i < semesterDict.length; i++) {
+            if (semesterDict[i].key == semesterId) {
+                semesterDict[i].value.courses.push(course);
+                break;
+            }
+        }
+        var courseNumer = courseIdInc;
+        var newdiv = document.createElement("div");
+        newdiv.id = "semester" + semesterId + "_Course" + courseNumer + "_CourseDiv";
+        var divid = "'semester" + semesterId + "_Course" + courseNumer + "_CourseDiv'";
+        newdiv.innerHTML =
+            '<br>' +
+            '<div class="row">' +
+                '<div class="col-sm-4">' +
+                    '<input type="text" class="form-control" id="' + newDivName + namePostfix + '" value="' + courseName + '">' +
+                '</div>' +
+                '<div class="col-sm-2">' +
+                    '<input type="number" class="form-control" id="' + newDivName + EctsPostFix + '" value="' + courseECTS + '" >' +
+                '</div>'+
+                '<div class="col-sm-2">'+
+                '<input type="number" class="form-control" id="' + newDivName + gradePostfix  + '" value="' + courseGrade + '" >'+
+                '</div>'+
+                '<div class="col-sm-2">'+
+                    '<input type="number" class="form-control" id="' + newDivName +  averageGradePostfix +'" value="' + courseGradeAverage + '" >'+
+                '</div>'+
+                '<div class="col-sm-1">'+
+                    '<button type="button" class="btn btn-secondary" onclick="updateCourseField(newDivName)"> Update </button>'+
+                '</div>'+
+                '<div class="col-sm-1">' +
+                    '<button type="button" class="btn btn-danger" onclick="removeCourseField(' + divid + ' ,' + semesterId + ' ,' + courseIdInc + ')"> Delete </button>' +
+                ' </div>' +
+            '</div>';
+        document.getElementById(appendToDiv).appendChild(newdiv);
+        updateCardHeaderValues(semesterId);
+        clearCourseInputField(semesterId);
+        courseIdInc++;
+        saveDataToLocalStorage();
+    }
+    function addSemesterField(divName, semesterName) {
+        var newSemester = {
+            key: semesterIdInc,
+            value: {
+                id: semesterIdInc,
+                name: semesterName,
+                ECTS: 0,
+                studentGrade: 0,
+                averageGrade: 0,
+                semesterCourseCounter: 0,
+                courses: []
+            }
+        };
+        semesterDict.push(newSemester);
+        var appendToDivName = "'semester" + semesterIdInc + "_courseEntry'";
+        var currentSemesterNumber = semesterIdInc;
+        var newdiv = document.createElement('div');
+        newdiv.id = "semester" + semesterIdInc + "_SemesterDiv";
+        var divid = "'semester" + semesterIdInc + "_SemesterDiv'";
+        newdiv.innerHTML =
+            '<div class="card">'+
+                '<div class="card-header" id="heading_' + semesterIdInc + '">'+
+                    '<div class="row">'+
+                        '<div class="col-4">'+
+                            '<button class="btn btn-link" data-toggle="collapse" data-target="#semester_' + semesterIdInc + '" aria-expanded="true" aria-controls="semester_' + semesterIdInc + '">'+
+                               semesterName +
+                            '</button>'+
+                        '</div>'+
+                        '<div class="col-2">' +
+                        '<button class="btn btn-link" id="semesterHeader' + semesterIdInc +  '_ECTS" type="button" disabled> </button>'+
+                        '</div>'+
+                        '<div class="col-2">'+
+                        '<button class="btn btn-link"  type="button" id="semesterHeader' + semesterIdInc +  '_studentGrade" disabled> </button>'+
+                        '</div>'+
+                        '<div class="col-2">'+
+                            '<button class="btn btn-link" type="button" id="semesterHeader' + semesterIdInc +  '_averageGrade" disabled> </button>'+
+                        '</div>'+
+                        '<div class="col-sm-1">'+
+                            '<button type="button" class="btn btn-secondary" onclick="" disabled> Update </button>'+
+                        '</div>'+
+                        '<div class="col-sm-1">' +
+                            '<button type="button" class="btn btn-danger" onclick="removeSemesterField(' + divid + ', ' + semesterIdInc + ')"> Delete </button>' +
+                        '</div>'+
+                    '</div>'+
+                    '</div>' +
+                        '<div id="semester_' + semesterIdInc + '" class="collapse" aria-labelledby="heading_' + semesterIdInc + '" data-parent="#accordion">'+
+                    '<div class="card-body">'+
+                        '<div id="semester' + semesterIdInc + '_courseEntry" class="form-group">'+
+                            '<div class="row">'+
+                                '<div class="col-sm-4">'+
+                                    'Course name'+
+                                '</div>'+
+                                '<div class="col-sm-2">'+
+                                    'ECTS points'+
+                                '</div>'+
+                                '<div class="col-sm-2">'+
+                                    'Student grade'+
+                                '</div>'+
+                                '<div class="col-sm-2">'+
+                                    'Average grade'+
+                                '</div>'+
+                            '</div>'+
+                        '</div>'+
+                        '<hr />'+
+                    '</div>'+
+                    '<div class="card-body" id="semester' + semesterIdInc + '_addCourse">'+
+                        '<div class="form-group">'+
+                            '<div class="row">'+
+                               '<div class="col-md-4">'+
+                                    '<input type="text" class="form-control" id="semester' + semesterIdInc +  '_AddCourse_Name" placeholder="Course name">'+
+                                '</div>'+
+                                '<div class="col-md-2">'+
+                                    '<input type="number" class="form-control" id="semester' + semesterIdInc +  '_AddCourse_ECTS" placeholder="ECTS points">'+
+                                '</div>'+
+                                '<div class="col-md-2">'+
+                                    '<input type="number" class="form-control" id="semester' + semesterIdInc +  '_AddCourse_StudentGrade" placeholder="Student grade">'+
+                                '</div>'+
+                                '<div class="col-md-2">'+
+                                     '<input type="number" class="form-control" id="semester' + semesterIdInc +  '_AddCourse_AverageGrade" placeholder="Average grade">'+
+                                '</div>'+
+                                '<div class="col-md-2">' +
+                                    '<button type="button" class="btn btn-primary" onclick="addCourseField(' + appendToDivName + ', ' + currentSemesterNumber + ', ' +
+                                                                                                           'semester' + semesterIdInc + '_AddCourse_Name.value, ' +
+                                                                                                           'semester' + semesterIdInc + '_AddCourse_ECTS.value, ' +
+                                                                                                           'semester' + semesterIdInc + '_AddCourse_StudentGrade.value, ' +
+                                                                                                           'semester' + semesterIdInc + '_AddCourse_AverageGrade.value)"> Add course </button>' +
+                                 '</div>'+
+                            '</div>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>'+
+            '</div>';
+        document.getElementById(divName).appendChild(newdiv);
+        semesterIdInc++;
+        //Save the data in the browser to be recollected in another session
+        saveDataToLocalStorage();
+        clearSemesterInputfield();
+    }
+    function removeCourseField(elementName, semesterIndex, courseIndex) {
+        var element = document.getElementById(elementName);
+        element.remove();
+        // Only update the values of a header if a course have been removed.
+        for (var j = 0; j < semesterDict.length; j++) {
+            if (semesterDict[j].key == semesterIndex) {
+                for (var i = 0; i < semesterDict[j].value.courses.length; i++) {
+                    if (semesterDict[j].value.courses[i].key == courseIndex) {
+                        semesterDict[j].value.courses.splice(i, 1);
+                        updateCardHeaderValues(semesterIndex);
+                        break;
+                    }
+                }
+            }
+        }
+        saveDataToLocalStorage();
+    }
+    function removeSemesterField(elementName, semesterIndex) {
+        var element = document.getElementById(elementName);
+        element.remove();
+        for (var i = 0; i < semesterDict.length; i++) {
+            if (semesterDict[i].key == semesterIndex) {
+                semesterDict.splice(i, 1);
+                break;
+            }
+        }
+        saveDataToLocalStorage();
+    }
+
+    function RemoveFromSemesterList(semesterIndex) {
+        semesterDict.splice(semesterIndex, 1);
+    }
+
+    function updateCardHeaderValues(semesterIndex) {
+        var ectsSum = 0;
+        var weightedGradeSum = 0;
+        var weightedAverageGradeSum = 0;
+        for (var j = 0; j < semesterDict.length; j++) {
+            if (semesterDict[j].key == semesterIndex) {
+                for (var i = 0; i < semesterDict[j].value.courses.length; i++) {
+                    ectsSum = ectsSum + parseInt(semesterDict[j].value.courses[i].value.ECTS);
+                    weightedGradeSum = weightedGradeSum + semesterDict[j].value.courses[i].value.studentGrade * semesterDict[j].value.courses[i].value.ECTS;
+                    weightedAverageGradeSum = weightedAverageGradeSum + semesterDict[j].value.courses[i].value.averageGrade * semesterDict[j].value.courses[i].value.ECTS;
+                }
+            }
+        }
+        var ectsDiv = "semesterHeader" + semesterIndex + "_ECTS";
+        var gradeDiv = "semesterHeader" + semesterIndex + "_studentGrade";
+        var averageGradeDiv = "semesterHeader" + semesterIndex + "_averageGrade";
+        document.getElementById(ectsDiv).textContent = ectsSum;
+        if ((weightedGradeSum / ectsSum) > 10) {
+            document.getElementById(gradeDiv).textContent = (weightedGradeSum / ectsSum).toPrecision(3);
+        }
+        else {
+            document.getElementById(gradeDiv).textContent = (weightedGradeSum / ectsSum).toPrecision(2);
+        }
+        if ((weightedAverageGradeSum / ectsSum) > 10) {
+            document.getElementById(averageGradeDiv).textContent = (weightedAverageGradeSum / ectsSum).toPrecision(3);
+        }
+        else {
+            document.getElementById(averageGradeDiv).textContent = (weightedAverageGradeSum / ectsSum).toPrecision(2);
+        }
+
+    }
+    window.onload = function loadDataToFields() {
+        var sessionData = JSON.parse(localStorage.getItem('grade'));
+
+        for (i = 0; i < sessionData.semesters.length; i++) {
+            addSemesterField('accordion', sessionData.semesters[i].value.name);
+            for (var j = 0; j < sessionData.semesters[i].value.courses.length; j++) {
+                var appendToDivName = "semester" + i + "_courseEntry";
+                addCourseField(appendToDivName, i,
+                    sessionData.semesters[i].value.courses[j].value.name,
+                    sessionData.semesters[i].value.courses[j].value.ECTS,
+                    sessionData.semesters[i].value.courses[j].value.studentGrade,
+                    sessionData.semesters[i].value.courses[j].value.averageGrade);
+            }
+        }
+        semesterDict = sessionData.semesters;
+        semesterIdInc = sessionData.semesterCounter;
+        courseIdInc = sessionData.courseCounter;
+
+    }
+
+    function saveDataToLocalStorage() {
+        sessionData = {
+            semesters: semesterDict,
+            semesterCounter: semesterIdInc,
+            courseCounter: courseIdInc
+        };
+        localStorage.setItem('grade', JSON.stringify(sessionData));
+    }
+    function clearSemesterInputfield() {
+        document.getElementById('addSemesterName').value = "";
+    }
+    function clearCourseInputField(semesterIndex) {
+        var nameField = "semester" + semesterIndex + "_AddCourse_Name";
+        var ectsField = "semester" + semesterIndex + "_AddCourse_ECTS";
+        var gradeField = "semester" + semesterIndex + "_AddCourse_StudentGrade";
+        var averageGradeField = "semester" + semesterIndex + "_AddCourse_AverageGrade";
+
+        document.getElementById(nameField).value = "";
+        document.getElementById(ectsField).value = "";
+        document.getElementById(gradeField).value = "";
+        document.getElementById(averageGradeField).value = "";
+    }
+</script>
+
+<!--
+    <h2>Grade</h2>
+    -->
+<br />
+
+<div>
+    <div class="row">
+        <div class="col-lg-4">
+            Name
+        </div>
+        <div class="col-lg-2">
+            ETCS points
+        </div>
+        <div class="col-lg-2">
+            Student grade
+        </div>
+        <div class="col-lg-2">
+            Average grade
+        </div>
+        <div class="col-lg-1">
+        </div>
+        <div class="col-lg-1">
+        </div>
+    </div>
+    <div id="accordion">
+
+    </div>
+</div>
+<br />
+<form>
+    <div id="addSemesterForm" class="form-group">
+        <div class="row">
+            <div class="col-4">
+                <input type="text" class="form-control" id="addSemesterName" placeholder="Semester name">
+            </div>
+            <div class="col-4">
+                <button type='button' class='btn btn-primary' onclick="addSemesterField('accordion', addSemesterName.value)"> Add semester </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!--
+<form>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-4">
+                <input type="text" class="form-control" id="11" placeholder="Study name">
+            </div>
+            <div class="col-4">
+                <button type='button' class='btn btn-primary' onclick='addSemesterField(divName)'> Add study </button>
+            </div>
+        </div>
+    </div>
+</form>
+    -->
