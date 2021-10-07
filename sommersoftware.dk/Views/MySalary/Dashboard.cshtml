@@ -37,6 +37,7 @@
 </head>
 
 <script type="text/javascript">
+    var salaryData;
     window.onload = function saveData() {
         var settings = {
             CalendarLink: '@Html.Raw(settings.CalendarLink)',
@@ -57,7 +58,27 @@
     }
 
     function createShiftList(monthIndex) {
+        getMonthDataFromIndex();
+    }
 
+    function getMonthDataFromIndex(index) {
+
+    }
+
+    function prepareSalaryData() {
+        @{ 
+            int yearIndex = 0;
+            foreach (YearModel year in Model)
+            {
+                int monthIndex = 0;
+                foreach (MonthModel month in year.Months)
+                {
+
+                    monthIndex++;
+                }
+                yearIndex++;
+            }
+        }
     }
 </script>
 
@@ -71,115 +92,126 @@
 </div>
 <hr />
 
-
-<div class="container-fluid">
+<!--
+    <div class="container-fluid">
     <div class="row">
         <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
             <div class="position-sticky pt-3">
-                Select paycheck
-                @{
-                    foreach (YearModel year in Model)
-                    {
-                        <hr />
-                        <div class="d-grid gap-2 col-md-3">
-                            <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle align-content-center" type="button" id="dropdownMenuYear" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    @year.YearNumber
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuYear">
-                                    <a class="dropdown-item" href="#"></a>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                }
+                <!-- Months listed here 
+@{
+    Model.Reverse();
+    foreach (YearModel year in Model)
+    {
+        year.Months.Reverse();
+        @foreach (MonthModel month in year.Months)
+        {
+            <a class="btn btn-link" href="#">@month.DisplayName </a>
+        }
+    }
+}
             </div>
         </nav>
+-->
+<main class="col-md-12 ms-sm-auto col-lg-12 px-md-4">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Dashboard</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <!-- Years listed here
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuYear" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Select year
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuYear">
+                    @{
+                        foreach (YearModel year in Model)
+                        {
+                            <a class="dropdown-item" href="#">@year.YearNumber</a>
+                        }
+                    }
 
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">Dashboard</h1>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <!-- Years listed here
-                    <div class="dropdown">
-                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuYear" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Select year
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuYear">
-                            @{
-                                foreach (YearModel year in Model)
-                                {
-                                    <a class="dropdown-item" href="#">@year.YearNumber</a>
-                                }
-                            }
-
-                        </div>
-                    </div>
-                    -->
-                    <div class="dropdown">
-                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuMonth" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Select salary month
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuMonth">
-                            <!-- Months listed here -->
-                            @{
-                                foreach (YearModel year in Model)
-                                {
-                                    @foreach (MonthModel month in year.Months)
-                                    {
-                                        <a class="dropdown-item" href="#">@month.DisplayName </a>
-                                    }
-                                }
-                            }
-
-                        </div>
-                    </div>
                 </div>
             </div>
-
-            <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
-
-            <h2>Month details - @currentPeriod.DisplayName</h2>
-            <div class="table-responsive">
-                <table class="table table-striped table-sm">
-                    <tr>
-                        <td>Total hours: @Html.DisplayFor(modelItem => currentPeriod.TotalHoursWorked)</td>
-                        <td>Evening hours: @Html.DisplayFor(modelItem => currentPeriod.EveningSalaryMinutes)</td>
-                        <td>Saturday hours: @Html.DisplayFor(modelItem => currentPeriod.SaturdaySalaryMinutes)</td>
-                        <td>Sunday hours: @Html.DisplayFor(modelItem => currentPeriod.SundaySalaryMinutes)</td>
-                    </tr>
-                    <tr>
-                        <td>Hour salary: @Html.DisplayFor(modelItem => currentPeriod.HourSalaryTotal)</td>
-                        <td>Evening salary: @Html.DisplayFor(modelItem => currentPeriod.EveningSalaryTotal)</td>
-                        <td>Saturday salary: @Html.DisplayFor(modelItem => currentPeriod.SaturdaySalaryTotal)</td>
-                        <td>Sunday salary: @Html.DisplayFor(modelItem => currentPeriod.SundaySalaryTotal)</td>
-                    </tr>
-                    <tr>
-                        <td>Brutto salary: @Html.DisplayFor(modelItem => currentPeriod.MonthSalaryAsCurrency)</td>
-                        <td>Netto salary: @Html.DisplayFor(modelItem => currentPeriod.TotalSalaryAfterTax)</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </table>
-            </div>
-            <hr />
-            <h2>Shifts</h2>
-            <div class="table-responsive">
-                <table class="table table-striped table-sm">
-                    @foreach (var shift in currentPeriod.Shifts)
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => shift.DisplayDateTime)
-                            </td>
-                            <td align="right">
-                                @Html.DisplayFor(modelItem => shift.SalaryAsCurrency)
-                            </td>
-                        </tr>
+            -->
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuMonth" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Select salary month
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuMonth">
+                    <!-- Months listed here -->
+                    @{
+                        foreach (YearModel year in Model)
+                        {
+                            @foreach (MonthModel month in year.Months)
+                            {
+                                <a class="dropdown-item" onclick="createShiftList(0)" href="#">@month.DisplayName </a>
+                            }
+                        }
                     }
-                </table>
+
+                </div>
             </div>
-        </main>
+        </div>
+    </div>
+
+    <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
+
+    <h2>Month details - @currentPeriod.DisplayName</h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-sm">
+            <tr>
+                <td>Total hours:</td>
+                <td>Evening hours:</td>
+                <td>Saturday hours:</td>
+                <td>Sunday hours:</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayFor(modelItem => currentPeriod.TotalHoursWorked)</td>
+                <td>@Html.DisplayFor(modelItem => currentPeriod.EveningSalaryMinutes)</td>
+                <td>@Html.DisplayFor(modelItem => currentPeriod.SaturdaySalaryMinutes)</td>
+                <td>@Html.DisplayFor(modelItem => currentPeriod.SundaySalaryMinutes)</td>
+            </tr>
+            <tr>
+                <td>Hour salary:</td>
+                <td>Evening salary:</td>
+                <td>Saturday salary:</td>
+                <td>Sunday salary:</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayFor(modelItem => currentPeriod.HourSalaryTotal)</td>
+                <td>@Html.DisplayFor(modelItem => currentPeriod.EveningSalaryTotal)</td>
+                <td>@Html.DisplayFor(modelItem => currentPeriod.SaturdaySalaryTotal)</td>
+                <td>@Html.DisplayFor(modelItem => currentPeriod.SundaySalaryTotal)</td>
+            </tr>
+            <tr>
+                <td>Brutto salary:</td>
+                <td>Netto salary:</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayFor(modelItem => currentPeriod.MonthSalaryAsCurrency)</td>
+                <td>@Html.DisplayFor(modelItem => currentPeriod.TotalSalaryAfterTax)</td>
+            </tr>
+        </table>
+    </div>
+    <hr />
+    <h2>Shifts</h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-sm">
+            @foreach (var shift in currentPeriod.Shifts)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => shift.DisplayDateTime)
+                    </td>
+                    <td align="right">
+                        @Html.DisplayFor(modelItem => shift.SalaryAsCurrency)
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</main>
     </div>
 </div>
 
@@ -253,13 +285,11 @@
 <hr />
 @{
     int i = 0;
-    Model.Reverse();
 
 }
 <div class="panel-group" id="accordion_@i">
     @foreach (YearModel year in Model)
     {
-        year.Months.Reverse();
         @foreach (MonthModel month in year.Months)
         {
             <div class="accordion" id="accordionParent_@i">
