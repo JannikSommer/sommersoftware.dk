@@ -11,6 +11,7 @@
     <Content Remove="Models\GradeModels\**" />
     <EmbeddedResource Remove="Models\GradeModels\**" />
     <None Remove="Models\GradeModels\**" />
+    <None Remove="APIs\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,4 +29,7 @@
     <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="APIs\" />
+  </ItemGroup>
 </Project>

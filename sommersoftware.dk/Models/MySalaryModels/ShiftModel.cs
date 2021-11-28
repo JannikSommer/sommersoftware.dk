@@ -10,12 +10,13 @@ namespace sommersoftware.dk.Models.MySalaryModels
     public class ShiftModel : ShiftParentModel
     {
 
-        public ShiftModel(DateTime date, String weekday, int weekNumber, int yearNumber, int startHour, int startMinute, int endHour, int endMinute, WageDetailsModel wages)
+        public ShiftModel(DateTime date, String weekday, int weekNumber, int yearNumber, int startHour,
+                          int startMinute, int endHour, int endMinute, WageDetailsModel wages)
         {
             Date = date;
             if (Date.ToString("dd/MM/yyyy").Contains("31/12"))
             {
-                // If the date is the last of the year, hours after 15:00 are added with added holiday wage. 
+                // TODO: If the date is the last of the year, hours after 15:00 are added with added holiday wage. 
             }
             Weekday = weekday;
             WeekNumber = weekNumber;

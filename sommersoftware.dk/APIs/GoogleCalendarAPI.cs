@@ -8,19 +8,28 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using Google.Apis.Auth.AspNetCore3;
+using sommersoftware.dk.Models.MySalaryModels;
 
-namespace sommersoftware.dk.Models.MySalaryModels
+namespace sommersoftware.dk.APIs.GoogleCalendarAPI
 {
     public class GoogleCalendarAPI
     {
         private SettingsModel UserSettings;
         private WageDetailsModel WageDetails;
-        
-        public async Task<List<YearModel>> GetYears(SettingsModel userSettings, CalendarService service) 
+
+
+        /// <summary>
+        /// Returns a list of YearModel with salary details.
+        /// </summary>
+        /// <param name="userSettings"><see cref="UserSettings"/> with the needed parameters setup by the user.</param>
+        /// <param name="service"><see cref="CalendarService"/> setup with credentials.</param>
+        /// <returns><see cref="List{YearModel}"/></returns>
+        public async Task<List<YearModel>> GatherCalendarData(SettingsModel userSettings, CalendarService service) 
         {
             UserSettings = userSettings;
             WageDetails = new WageDetailsModel(UserSettings.HourWage, UserSettings.EveningWage, UserSettings.SaturdayWage, UserSettings.SundayWage);
-            
+
+            // Setup request parameters
             EventsResource.ListRequest request;
             if (UserSettings.CalendarLink.Length > 0)
             {
@@ -40,7 +49,20 @@ namespace sommersoftware.dk.Models.MySalaryModels
             Events shiftEvents = await request.ExecuteAsync();
             Events holidayEvents = await GetDanishHolidaysAsync(service, UserSettings.EndDate);
 
-            return ExtractShifts(shiftEvents, holidayEvents);
+            var extracted_shifts = ExtractShifts(shiftEvents, holidayEvents);
+
+            // Clean up the output
+            foreach (YearModel year in extracted_shifts)
+            {
+                foreach (MonthModel month in year.Months.ToList())
+                {
+                    if (month.Shifts.Count == 0)
+                        year.Months.Remove(month);
+                    else
+                        month.UpdateTotalMonthSalary();
+                }
+            }
+            return extracted_shifts;
         }
 
         private Events GetDanishHolidays(CalendarService service, DateTime lastEventDate)
@@ -231,10 +253,6 @@ namespace sommersoftware.dk.Models.MySalaryModels
         {
             if (dateNumber < 19)
             {
-                //if (monthNumber == 0)
-                //    years[yearCounter - 1].Months[monthNumber].Shifts.Add(shift);
-                //else
-                
                 years[yearCounter].Months[monthNumber - 1].Shifts.Add(shift);
             }
             else
@@ -261,6 +279,8 @@ namespace sommersoftware.dk.Models.MySalaryModels
         private List<PlanningPeriodModel> DivideCalendarIntoPlanningPeriods(List<ShiftParentModel> shifts)
         {
             List<YearModel> years = DivideShiftsIntoYearsAndWeeks(shifts);
+
+            // These periods are hardcoded as I have not yet found a good algorithm to generate these...
             PlanningPeriodModel period1 = new PlanningPeriodModel(1, new DateTime(2019, 12, 30), new DateTime(2020, 4, 12));
             PlanningPeriodModel period2 = new PlanningPeriodModel(2, new DateTime(2020, 4, 13), new DateTime(2020, 8, 2));
             PlanningPeriodModel period3 = new PlanningPeriodModel(3, new DateTime(2020, 8, 3), new DateTime(2020, 11, 22));
